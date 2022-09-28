@@ -1,0 +1,13 @@
+apiVersion: v1
+entries:
+  app1:
+    - apiVersion: v1
+      appVersion: "1.0"
+      created: "2019-07-03T13:03:06.139332963-05:00"
+      description: A Helm chart for Kubernetes
+      digest: 48cf831b72febeac2860a0be372094250aea68a9c76147c028085c8802dd48ec
+      name: app1
+      urls:
+        - https://github.com/rcbandit111/terraform_helm_chart_poc/tree/main/helm/spring-helm-stg
+      version: 0.1.0
+generated: "2019-07-03T13:03:05.685803874-05:00"

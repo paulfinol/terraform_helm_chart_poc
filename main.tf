@@ -45,9 +45,9 @@ resource "kubernetes_namespace" "example" {
   }
 }
 
-resource "helm_release" "kubewatch" {
-  name       = "kubewatch"
-  repository = "https://github.com/binblee/springboot-helm-chart/tree/master/demoweb/charts/springboot-demoweb"
-  chart      = "kubewatch"
+resource "helm_release" "spring-helm-stg" {
+  name       = "spring-helm-stg"
+  repository = "https://github.com/rcbandit111/terraform_helm_chart_poc/tree/main/helm/spring-helm-stg"
+  chart      = "spring-helm-stg"
 
 }
