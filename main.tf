@@ -49,5 +49,4 @@ resource "helm_release" "spring-helm-stg" {
   name       = "spring-helm-stg"
   repository = "https://github.com/rcbandit111/terraform_helm_chart_poc/tree/main/helm/spring-helm-stg"
   chart      = "spring-helm-stg"
-
 }
