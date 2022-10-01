@@ -1,0 +1,16 @@
+---
+- hosts: kubemaster
+  become: yes
+  remote_user: root
+  roles:
+    - role: ansible-role-linux-kubernetes
+  vars_files:
+    - vars.yaml
+
+- hosts: kubeworker
+  become: yes
+  remote_user: root
+  roles:
+    -  role: ansible-role-linux-kubernetes
+  vars_files:
+    - vars.yaml

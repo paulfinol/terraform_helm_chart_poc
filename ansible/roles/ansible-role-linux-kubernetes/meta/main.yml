@@ -1,0 +1,20 @@
+---
+dependencies: []
+
+galaxy_info:
+  description: 'Install and configure a high available Kubernetes cluster'
+  platforms:
+    - name: Ubuntu
+      versions:
+        - jammy
+        - focal
+    - name: EL
+      versions:
+        - 8
+  galaxy_tags:
+    - kubernetes
+    - k8s
+    - kubeadm
+    - cluster
+    - multinode
+    - infrastructure
