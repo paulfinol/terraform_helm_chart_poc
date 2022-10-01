@@ -18,10 +18,10 @@
   retries: 90
   delay: 15
 
-# - set_fact:
-#     kubernetes_ip_address: "{{ item }}"
-#   when: "item | ipaddr( kubernetes_subnet )"
-#   with_items: "{{ ansible_all_ipv4_addresses | difference([kubernetes_vip_ip]) }}"
+- set_fact:
+    kubernetes_ip_address: "{{ item }}"
+  when: "item | ipaddr( kubernetes_subnet )"
+  with_items: "{{ ansible_all_ipv4_addresses | difference([kubernetes_vip_ip]) }}"
 
 - name: Check if kubeadm CA cert is accessible
   stat:
@@ -76,25 +76,25 @@
       ansible.builtin.template:
         src: kubeadm-join-master.yml.j2
         dest: /root/kubeadm-join-master.yml
-
+    
     - name: Cluster join - master
       ansible.builtin.command: kubeadm join --config /root/kubeadm-join-master.yml
       register: kubeadm_join
       changed_when: kubeadm_join is success
 
     - name: Create ~/.kube directory
-      ansible.builtin.file:
+      ansible.builtin.file: 
         name: ~/.kube
         state: directory
-
+    
     - name: Populate .kube/config file
-      ansible.builtin.copy:
+      ansible.builtin.copy: 
         src: /etc/kubernetes/admin.conf
         dest: ~/.kube/config
         remote_src: yes
   when:
     - inventory_hostname in groups['kubemaster']
-    - kubelet_dir.stat.exists is defined
+    - kubelet_dir.stat.exists is defined 
     - kubelet_dir.stat.exists == False
   ignore_errors: "{{ ansible_check_mode }}"
 
@@ -103,13 +103,13 @@
       ansible.builtin.template:
         src: kubeadm-join-worker.yml.j2
         dest: /root/kubeadm-join-worker.yml
-
+    
     - name: Cluster join - worker
       ansible.builtin.command: kubeadm join --config /root/kubeadm-join-worker.yml
       register: kubeadm_join
       changed_when: kubeadm_join is success
   when:
     - inventory_hostname in groups['kubeworker']
-    - kubelet_dir.stat.exists is defined
+    - kubelet_dir.stat.exists is defined 
     - kubelet_dir.stat.exists == False
   ignore_errors: "{{ ansible_check_mode }}"

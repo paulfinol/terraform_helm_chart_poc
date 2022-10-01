@@ -1,8 +1,7 @@
 ---
 
 disable_firewall: yes
-# kubernetes_subnet: 192.168.25.0/24
-kubernetes_ip_address: 38.242.240.45
+kubernetes_subnet: 38.242.192.0/19
 
 setup_vip: no
 install_nginx_ingress: yes
