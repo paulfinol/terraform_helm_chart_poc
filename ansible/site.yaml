@@ -4,6 +4,7 @@
   remote_user: root
   roles:
     - role: ansible-role-linux-kubernetes
+    - role: ansible_role_helm
   vars_files:
     - vars.yaml
 
@@ -11,6 +12,7 @@
   become: yes
   remote_user: root
   roles:
-    -  role: ansible-role-linux-kubernetes
+    - role: ansible-role-linux-kubernetes
+    - role: ansible_role_helm
   vars_files:
     - vars.yaml

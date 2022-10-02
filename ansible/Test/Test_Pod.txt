@@ -1,0 +1,50 @@
+root@vmi1026661:~# kubectl describe pod web-6bf786c76b-zsbt4
+Name:         web-6bf786c76b-zsbt4
+Namespace:    default
+Priority:     0
+Node:         vmi1026660/38.242.240.39
+Start Time:   Sun, 02 Oct 2022 09:30:22 +0200
+Labels:       app=web
+              pod-template-hash=6bf786c76b
+Annotations:  <none>
+Status:       Running
+IP:           10.244.1.5
+IPs:
+  IP:           10.244.1.5
+Controlled By:  ReplicaSet/web-6bf786c76b
+Containers:
+  hello-app:
+    Container ID:   containerd://e517c088c1c1e748cabc241d37dc59a36208cfcc739094e78358175cbbbefc24
+    Image:          gcr.io/google-samples/hello-app:1.0
+    Image ID:       gcr.io/google-samples/hello-app@sha256:88b205d7995332e10e836514fbfd59ecaf8976fc15060cd66e85cdcebe7fb356
+    Port:           <none>
+    Host Port:      <none>
+    State:          Running
+      Started:      Sun, 02 Oct 2022 09:30:24 +0200
+    Ready:          True
+    Restart Count:  0
+    Environment:    <none>
+    Mounts:
+      /var/run/secrets/kubernetes.io/serviceaccount from kube-api-access-42p8m (ro)
+Conditions:
+  Type              Status
+  Initialized       True
+  Ready             True
+  ContainersReady   True
+  PodScheduled      True
+Volumes:
+  kube-api-access-42p8m:
+    Type:                    Projected (a volume that contains injected data from multiple sources)
+    TokenExpirationSeconds:  3607
+    ConfigMapName:           kube-root-ca.crt
+    ConfigMapOptional:       <nil>
+    DownwardAPI:             true
+QoS Class:                   BestEffort
+Node-Selectors:              <none>
+Tolerations:                 node.kubernetes.io/not-ready:NoExecute op=Exists for 300s
+                             node.kubernetes.io/unreachable:NoExecute op=Exists for 300s
+Events:                      <none>
+root@vmi1026661:~# curl 10.244.1.5:8080
+Hello, world!
+Version: 1.0.0
+Hostname: web-6bf786c76b-zsbt4
