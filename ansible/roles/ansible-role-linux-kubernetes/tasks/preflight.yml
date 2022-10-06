@@ -1,0 +1,126 @@
+---
+
+- block:
+    - name: disable ufw
+      ansible.builtin.systemd:
+        name: ufw 
+        state: stopped 
+        enabled: no
+      when: disable_firewall
+  when: ansible_os_family == 'Debian'
+
+- block:
+    - name: Install iptables-legacy
+      ansible.builtin.dnf: 
+        name: 
+          - iptables-legacy
+        state: present
+    
+    - name: Remove zram-generator-defaults
+      ansible.builtin.dnf: 
+        name: 
+          - zram-generator-defaults
+        state: absent
+
+    - name: disable firewalld
+      ansible.builtin.systemd:
+        name: firewalld 
+        state: stopped 
+        enabled: no
+      when: disable_firewall
+
+    - name: Put SELinux in permissive mode, logging actions that would be blocked.
+      ansible.posix.selinux:
+        policy: targeted
+        state: permissive
+
+    - name: Disable SELinux
+      ansible.posix.selinux:
+        state: disabled
+  when: ansible_os_family == 'RedHat'
+
+- name: Install openssl
+  ansible.builtin.package: 
+    name: 
+      - openssl
+    state: present
+
+- name: load overlay kernel module
+  ansible.builtin.command: modprobe overlay
+
+- name: load br_netfilter kernel module
+  ansible.builtin.command: modprobe br_netfilter
+
+- name: load kernel modules - persistent
+  blockinfile:
+    path: /etc/modules-load.d/containerd.conf
+    create: yes
+    block: |
+      overlay
+      br_netfilter
+
+- name: Modify sysctl parameters - persistent
+  blockinfile:
+    path: /etc/sysctl.d/99-kubernetes-cri.conf
+    create: yes
+    block: |
+      net.bridge.bridge-nf-call-iptables  = 1
+      net.ipv4.ip_forward                 = 1
+      net.bridge.bridge-nf-call-ip6tables = 1
+
+- name: load br_netfilter kernel module
+  ansible.builtin.command: sysctl --system
+
+- name: Disable SWAP
+  ansible.builtin.shell: |
+    swapoff -a
+
+- name: Disable SWAP in fstab
+  ansible.builtin.replace:
+    path: /etc/fstab
+    regexp: '^(\s*)([^#\n]+\s+)(\w+\s+)swap(\s+.*)$'
+    replace: '#\1\2\3swap\4'
+    backup: yes
+
+- name: check iptables version
+  ansible.builtin.shell: iptables --version
+  register: iptables_version
+  ignore_errors: yes
+
+- block:  
+    - community.general.alternatives:
+        name: iptables
+        link: /usr/sbin/iptables
+        path: /usr/sbin/iptables-legacy
+
+    - community.general.alternatives:
+        name: ip6tables
+        link: /usr/sbin/ip6tables
+        path: /usr/sbin/ip6tables-legacy
+
+    - ansible.builtin.reboot:
+        msg: "Reboot initiated by Ansible for iptables-legacy"
+        connect_timeout: 5
+        reboot_timeout: 300
+        pre_reboot_delay: 0
+        post_reboot_delay: 30
+        test_command: uptime
+  when: '"nf_tables" in iptables_version.stdout'
+  ignore_errors: "{{ ansible_check_mode }}"
+
+- block:
+    - name: Install open-iscsi,nfs-common using apt
+      ansible.builtin.apt: 
+        name: 
+          - open-iscsi
+          - nfs-common
+        state: present 
+
+    - name: start and enable iscsid
+      ansible.builtin.systemd:
+        name: iscsid
+        state: started
+        enabled: yes
+  when:
+    - install_longhorn
+    - inventory_hostname in groups['kubeworker']

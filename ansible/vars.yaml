@@ -1,0 +1,8 @@
+---
+
+disable_firewall: yes
+kubernetes_subnet: 38.242.224.0/19
+
+setup_vip: no
+install_nginx_ingress: yes
+install_longhorn: no

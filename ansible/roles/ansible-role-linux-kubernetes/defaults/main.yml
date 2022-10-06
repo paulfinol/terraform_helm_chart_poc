@@ -1,0 +1,38 @@
+---
+
+disable_firewall: no
+
+kubernetes_version: 1.24.3
+kubernetes_cri: containerd
+kubernetes_cni: flannel
+kubernetes_dns_domain: cluster.local
+kubernetes_pod_subnet: 10.244.0.0/16
+kubernetes_service_subnet: 10.96.0.0/12
+kubernetes_api_port: 6443
+
+kubernetes_subnet: 192.168.25.0/24
+
+setup_vip: no
+kubernetes_vip_ip: 192.168.25.225
+
+kubevip_version: v0.4.3
+
+install_longhorn: no
+longhorn_version: v1.3.1
+
+install_nginx_ingress: no
+nginx_ingress_controller_version: controller-v1.3.0
+nginx_ingress_controller_http_nodeport: 30080
+nginx_ingress_controller_https_nodeport: 30443
+enable_nginx_ingress_proxy_protocol: no
+enable_nginx_real_ip: no
+nginx_ingress_real_ip_cidr: 0.0.0.0/0
+nginx_ingress_proxy_body_size: 20m
+
+sans_base:
+  - "kubernetes"
+  - "kubernetes.default"
+  - "kubernetes.default.svc"
+  - "kubernetes.default.svc.{{ kubernetes_dns_domain }}"
+  - "localhost"
+  - "127.0.0.1"
