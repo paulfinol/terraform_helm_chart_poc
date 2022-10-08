@@ -20,7 +20,7 @@ nodeRegistration:
 ---
 apiServer:
   timeoutForControlPlane: 4m0s
-  certSANs: 
+  certSANs:
 {% for san in apiserver_sans %}
   - "{{ san }}"
 {% endfor %}
@@ -29,7 +29,7 @@ certificatesDir: /etc/kubernetes/pki
 clusterName: kubernetes
 controllerManager: {}
 dns: {}
-imageRepository: k8s.gcr.io
+imageRepository: registry.k8s.io
 kind: ClusterConfiguration
 kubernetesVersion: {{ kubernetes_version }}
 {% if groups['kubemaster'] | length > 1  %}
